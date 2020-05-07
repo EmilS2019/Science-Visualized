@@ -12,16 +12,24 @@ function createBall(x, y, velocityVector, radius) {
 }
 
 function collision(ball1, ball2) {
-    let b1_xrange = [ball1.x - ball1.radius, ball1.x + ball1.radius]
-    let b1_yrange = [ball1.y - ball1.radius, ball1.y + ball1.radius]
+    let overlapp = 5
+    let b1_xrange = [ball1.x - ball1.radius + overlapp, ball1.x + ball1.radius - overlapp]
+    let b1_yrange = [ball1.y - ball1.radius + overlapp, ball1.y + ball1.radius - overlapp]
     if (ball2.x + ball2.radius > b1_xrange[0] && ball2.x - ball2.radius < b1_xrange[1]
-        && ball2.y + ball2.radius > b1_yrange[0] && ball2.y - ball2.radius < b1_yrange[1])
-        console.log(`COLLISSION!!!`)
+        && ball2.y + ball2.radius > b1_yrange[0] && ball2.y - ball2.radius < b1_yrange[1]) {
+
+        let ball1VelVector = ball1.velocityVector
+
+        ball1.velocityVector[0] = -ball2.velocityVector[0]
+        ball1.velocityVector[1] = -ball2.velocityVector[1]
+        ball2.velocityVector[0] = -ball1VelVector[0]
+        ball2.velocityVector[1] = -ball1VelVector[1]
+    }
 }
 
 ballArray = [
     createBall(100, 100, [3, 3], 60),
-    createBall(100, 100, [0.1, 1], 60)
+    createBall(300, 100, [0.1, 1], 60)
 ]
 
 function moveBall() {
