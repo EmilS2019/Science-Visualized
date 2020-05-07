@@ -18,12 +18,6 @@ function collision(ball1, ball2) {
     if (ball2.x + ball2.radius > b1_xrange[0] && ball2.x - ball2.radius < b1_xrange[1]
         && ball2.y + ball2.radius > b1_yrange[0] && ball2.y - ball2.radius < b1_yrange[1]) {
 
-        let ball1VelVector = ball1.velocityVector
-
-        ball1.velocityVector[0] = -ball2.velocityVector[0]
-        ball1.velocityVector[1] = -ball2.velocityVector[1]
-        ball2.velocityVector[0] = -ball1VelVector[0]
-        ball2.velocityVector[1] = -ball1VelVector[1]
     }
 }
 
