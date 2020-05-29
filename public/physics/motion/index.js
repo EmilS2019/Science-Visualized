@@ -7,23 +7,56 @@ function AnimateBall(ball) {
     c.stroke()
 }
 
-function createBall(x, y, velocityVector, radius) {
-    return { x: x, y: y, velocityVector: velocityVector, radius: radius }
+function createBall(x, y, velocityVector, radius, mass) {
+    if (!mass) mass = 1
+    if (!radius) radius = 50
+    return { x, y, velocityVector, radius, mass }
 }
 
 function collision(ball1, ball2) {
-    let overlapp = 5
-    let b1_xrange = [ball1.x - ball1.radius + overlapp, ball1.x + ball1.radius - overlapp]
-    let b1_yrange = [ball1.y - ball1.radius + overlapp, ball1.y + ball1.radius - overlapp]
-    if (ball2.x + ball2.radius > b1_xrange[0] && ball2.x - ball2.radius < b1_xrange[1]
-        && ball2.y + ball2.radius > b1_yrange[0] && ball2.y - ball2.radius < b1_yrange[1]) {
 
+    dx1 = ball1.velocityVector[0]
+    dy1 = -ball1.velocityVector[1]
+    dx2 = ball2.velocityVector[0]
+    dy2 = -ball2.velocityVector[1]
+    //Equation source: https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional
+    console.log("collision")
+    scalar = (2 * ball2.mass * ((dx1 - dx2) * (ball1.x - ball2.x) + (dy1 - dy2) * (-ball1.y + ball2.y))) / ((ball1.mass + ball2.mass) * ((ball1.x - ball2.x) ** 2 + (-ball1.y + ball2.y) ** 2))
+    ball1.velocityVector[0] = dx1 - scalar * (ball1.x - ball2.x)
+    ball1.velocityVector[1] = dy1 - scalar * (-ball1.y + ball2.y)
+}
+
+
+function collisions() {
+    /*ballArray.forEach(ball => {
+        ballArray.forEach(ball2 => {
+            if (aInsideHitboxb(ball2, ball)) {
+                collision(ball, ball2)
+            }
+        })
+    })*/
+    if (aInsideHitboxb(ballArray[0], ballArray[1])) collision(ballArray[0], ballArray[1])
+    if (aInsideHitboxb(ballArray[0], ballArray[2])) collision(ballArray[0], ballArray[2])
+    if (aInsideHitboxb(ballArray[1], ballArray[2])) collision(ballArray[1], ballArray[2])
+    //if (aInsideHitboxb(ballArray[1], ballArray[0])) collision(ballArray[1], ballArray[0])
+}
+
+function aInsideHitboxb(a, b) {
+    let overlapp = 5
+    let b1_xrange = [a.x - a.radius + overlapp, a.x + a.radius - overlapp]
+    let b1_yrange = [a.y - a.radius + overlapp, a.y + a.radius - overlapp]
+    if (b.x + b.radius > b1_xrange[0] && b.x - b.radius < b1_xrange[1]
+        && b.y + b.radius > b1_yrange[0] && b.y - b.radius < b1_yrange[1]) {
+        return true
     }
+    return false
 }
 
 ballArray = [
-    createBall(100, 100, [3, 3], 60),
-    createBall(300, 100, [0.1, 1], 60)
+    new Ball(120, 300, [5, -5], 40, 2),
+    new Ball(300, 200, [-3, 2], 40, 2),
+    new Ball(600, 100, [1, -2], 40, 2),
+    //new Ball(300, 500, [2, 3], 40, 2),
 ]
 
 function moveBall() {
@@ -46,8 +79,8 @@ function animate() {
     //c.fillStyle = "rgba(0,0,0,0.1)"
     c.clearRect(0, 0, canvas.width, canvas.height)
     moveBall()
-    collision(ballArray[1], ballArray[0])
-    //collision(ballArray[1], ballArray[0])
+    collisions()
+
     ballArray.forEach(ball => {
         AnimateBall(ball)
     });
