@@ -13,24 +13,24 @@ function createBall(x, y, velocityVector, radius, mass) {
     return { x, y, velocityVector, radius, mass }
 }
 
-function collision(ball1, ball2) {
+function gravity(ball1, ball2) {
 
-    dx1 = ball1.velocityVector[0]
-    dy1 = -ball1.velocityVector[1]
-    dx2 = ball2.velocityVector[0]
-    dy2 = -ball2.velocityVector[1]
-    //Equation source: https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional
-    console.log("collision")
-    angle = Math.atan(Math.abs(ball1.y - ball2.y) / Math.abs(ball1.x - ball2.x))
+    ball1.velocityVector[0] += grav(ball1, ball2, "x")
+    ball1.velocityVector[1] += grav(ball1, ball2, "y")
 
-    temp = dx1
-    dx1 = Math.cos(angle) * dx1 - Math.sin(angle) * dy1
-    dy1 = Math.sin(angle) * temp + Math.cos(angle) * dy1
-
-
+    ball2.velocityVector[0] += grav(ball2, ball1, "x")
+    ball2.velocityVector[1] += grav(ball2, ball1, "y")
 
 }
 
+function grav(ball1, ball2, direction) {
+    const G = 1000000000000 * 0.0000000000667408
+    return G * ball1.mass * ball2.mass / dist(ball1, ball2) ** 2
+}
+
+function dist(ball1, ball2) {
+    return (((ball2.x - ball1.x) ** 2 + (ball2.y - ball1.y) ** 2) ** (1 / 2))
+}
 
 function collisions() {
     /*ballArray.forEach(ball => {
@@ -58,9 +58,9 @@ function aInsideHitboxb(a, b) {
 }
 
 ballArray = [
-    new Ball(120, 300, [5, -5], 40, 2),
-    new Ball(300, 200, [-3, 2], 40, 2),
-    new Ball(600, 100, [1, -2], 40, 2),
+    new Ball(120, 300, [0, 0], 40, 2),
+    new Ball(300, 200, [0, 0], 40, 2),
+    //new Ball(600, 100, [1, -2], 40, 2),
     //new Ball(300, 500, [2, 3], 40, 2),
 ]
 
@@ -84,8 +84,8 @@ function animate() {
     //c.fillStyle = "rgba(0,0,0,0.1)"
     c.clearRect(0, 0, canvas.width, canvas.height)
     moveBall()
-    collisions()
-
+    // collisions()
+    gravity(ballArray[0], ballArray[1])
     ballArray.forEach(ball => {
         AnimateBall(ball)
     });
