@@ -21,7 +21,10 @@ function collision(ball1, ball2) {
     dy2 = -ball2.velocityVector[1]
     //Equation source: https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional
     console.log("collision")
-    scalar = (2 * ball2.mass * ((dx1 - dx2) * (ball1.x - ball2.x) + (dy1 - dy2) * (-ball1.y + ball2.y))) / ((ball1.mass + ball2.mass) * ((ball1.x - ball2.x) ** 2 + (-ball1.y + ball2.y) ** 2))
+
+    scalar = (2 * ball2.mass * ((dx1 - dx2) * (ball1.x - ball2.x) + (dy1 - dy2) * (-ball1.y + ball2.y)))
+        / ((ball1.mass + ball2.mass) * ((ball1.x - ball2.x) ** 2 + (-ball1.y + ball2.y) ** 2))
+
     ball1.velocityVector[0] = dx1 - scalar * (ball1.x - ball2.x)
     ball1.velocityVector[1] = dy1 - scalar * (-ball1.y + ball2.y)
 }
